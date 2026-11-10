@@ -16,10 +16,15 @@ function getExtension(fileName) {
 
 function checkRiskyType(fileName) {
   const ext = getExtension(fileName);
-  // TODO: if RISKY_EXTENSIONS includes ext, return
-  // { points: WEIGHTS.riskyType, reason: "..." }
-  // otherwise return null
+  if (RISKY_EXTENSIONS.includes(ext)) {
+    return {points: WEIGHTS.riskyType , reason: 'This is a program or script file (.${ext}), which can run code on your computer if you open it.' };
+  }
+  return null;
 }
 
 console.log(getExtension("Zoom_Installer.pdf.exe"));
 console.log(getExtension("SETUP.EXE"));
+
+console.log(checkRiskyType("Zoom_Installer.exe"));
+console.log(checkRiskyType("Resume_Template.pdf"));
+console.log(checkRiskyType("SETUP.EXE"));
