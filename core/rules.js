@@ -1,15 +1,24 @@
 // Points each warning sign adds to the score
-const WEIGHTS = {
+export const WEIGHTS = {
   riskyType: 25,
+  archive: 15,
   doubleExtension: 35,
   lookalike: 30,
   shortener: 10,
   noHttps: 10,
+  // used by filescan.js
+  disguisedProgram: 60,
+  typeMismatch: 20,
+  pdfFeatures: 25,
+  scriptPatterns: 20,
 };
 
-const RISKY_EXTENSIONS = ["exe", "msi", "scr", "bat", "js", "jar", "zip"];
+const PROGRAM_EXTENSIONS = ["exe", "msi", "scr", "bat", "cmd", "js", "vbs", "ps1", "jar"];
+const ARCHIVE_EXTENSIONS = ["zip", "rar", "7z"];
 const DECOY_EXTENSIONS = ["pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "png", "txt"];
 const SHORTENER_HOSTS = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly"];
+
+// Well-known brands and their one real website
 const BRANDS = [
   { name: "zoom", domain: "zoom.us" },
   { name: "paypal", domain: "paypal.com" },
@@ -19,8 +28,10 @@ const BRANDS = [
   { name: "amazon", domain: "amazon.com" },
 ];
 
-function getExtension(fileName) {
-  return fileName.split(".").pop().toLowerCase();
+// "README" has no dot, so it has no extension
+export function getExtension(fileName) {
+  const parts = fileName.toLowerCase().split(".");
+  return parts.length > 1 ? parts.pop() : "";
 }
 
 // The real owner of an address is its last two pieces
@@ -28,23 +39,39 @@ function getRegistrableDomain(host) {
   return host.split(".").slice(-2).join(".");
 }
 
-function checkRiskyType(fileName) {
+// Returns the parsed link, or null if it isn't a valid link
+function parseUrl(url) {
+  try {
+    return new URL(url);
+  } catch {
+    return null;
+  }
+}
+
+export function checkRiskyType(fileName) {
   const ext = getExtension(fileName);
-  if (RISKY_EXTENSIONS.includes(ext)) {
+  if (PROGRAM_EXTENSIONS.includes(ext)) {
     return {
       points: WEIGHTS.riskyType,
       reason: `This is a program or script file (.${ext}), which can run code on your computer if you open it.`,
     };
   }
+  if (ARCHIVE_EXTENSIONS.includes(ext)) {
+    return {
+      points: WEIGHTS.archive,
+      reason: `This is a compressed archive (.${ext}). Archives can hide other files, so check what's inside before opening anything.`,
+    };
+  }
   return null;
 }
 
-function checkDoubleExtension(fileName) {
+export function checkDoubleExtension(fileName) {
   const parts = fileName.toLowerCase().split(".");
   const last = parts[parts.length - 1];
   const secondLast = parts[parts.length - 2];
+  const risky = [...PROGRAM_EXTENSIONS, ...ARCHIVE_EXTENSIONS];
 
-  if (parts.length >= 3 && DECOY_EXTENSIONS.includes(secondLast) && RISKY_EXTENSIONS.includes(last)) {
+  if (parts.length >= 3 && DECOY_EXTENSIONS.includes(secondLast) && risky.includes(last)) {
     return {
       points: WEIGHTS.doubleExtension,
       reason: `This file's name makes it look like a .${secondLast} file, but it is really a .${last} file.`,
@@ -53,9 +80,9 @@ function checkDoubleExtension(fileName) {
   return null;
 }
 
-function checkNoHttps(url) {
-  const protocol = new URL(url).protocol;
-  if (protocol === "http:") {
+export function checkNoHttps(url) {
+  const parsed = parseUrl(url);
+  if (parsed && parsed.protocol === "http:") {
     return {
       points: WEIGHTS.noHttps,
       reason: `This link is not secure (http), so the file could be changed on its way to your computer.`,
@@ -64,21 +91,22 @@ function checkNoHttps(url) {
   return null;
 }
 
-function checkShortener(url) {
-  const host = new URL(url).hostname;
-  if (SHORTENER_HOSTS.includes(host)) {
+export function checkShortener(url) {
+  const parsed = parseUrl(url);
+  if (parsed && SHORTENER_HOSTS.includes(parsed.hostname)) {
     return {
       points: WEIGHTS.shortener,
-      reason: `This link uses a link shortener (${host}), which hides where the download really comes from.`,
+      reason: `This link uses a link shortener (${parsed.hostname}), which hides where the download really comes from.`,
     };
   }
   return null;
 }
 
 // Trick 1: a brand name on a website that isn't the brand's real one
-function checkBrandOnWrongDomain(url) {
-  const host = new URL(url).hostname;
-  const owner = getRegistrableDomain(host);
+export function checkBrandOnWrongDomain(url) {
+  const parsed = parseUrl(url);
+  if (!parsed) return null;
+  const owner = getRegistrableDomain(parsed.hostname);
   for (const brand of BRANDS) {
     if (owner.includes(brand.name) && owner !== brand.domain) {
       return {
@@ -91,8 +119,10 @@ function checkBrandOnWrongDomain(url) {
 }
 
 // Trick 2: a real brand address stuffed in front of someone else's site
-function checkFakeSubdomain(url) {
-  const host = new URL(url).hostname;
+export function checkFakeSubdomain(url) {
+  const parsed = parseUrl(url);
+  if (!parsed) return null;
+  const host = parsed.hostname;
   const owner = getRegistrableDomain(host);
   for (const brand of BRANDS) {
     if (host.includes(brand.domain) && owner !== brand.domain) {
@@ -104,8 +134,3 @@ function checkFakeSubdomain(url) {
   }
   return null;
 }
-
-console.log(checkBrandOnWrongDomain("http://zoom-download.co/Zoom_Installer.pdf.exe")); // object
-console.log(checkBrandOnWrongDomain("https://zoom.us/download"));                       // null
-console.log(checkFakeSubdomain("https://zoom.us.verify-login.example/notes"));          // object
-console.log(checkFakeSubdomain("https://support.zoom.us/help"));                        // null
