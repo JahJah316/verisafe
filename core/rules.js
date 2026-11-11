@@ -10,6 +10,7 @@ const WEIGHTS = {
 // File types that deserve a second look
 const RISKY_EXTENSIONS = ["exe", "msi", "scr", "bat", "js", "jar", "zip"];
 const DECOY_EXTENSIONS = ["pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "png", "txt"];
+const SHORTENER_HOSTS = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly"];
 
 function getExtension(fileName) {
   return fileName.split(".").pop().toLowerCase();
@@ -40,8 +41,29 @@ function checkDoubleExtension(fileName) {
   return null;
 }
 
-console.log(checkRiskyType("Zoom_Installer.exe"));
-console.log(checkRiskyType("Resume_Template.pdf"));
-console.log(checkDoubleExtension("Invoice_2026.pdf.js"));
-console.log(checkDoubleExtension("Zoom_Installer.exe"));
-console.log(checkDoubleExtension("Resume_Template.pdf"));
+function checkNoHttps(url) {
+  const protocol = new URL(url).protocol;
+  if (protocol === "http:") {
+    return {
+      points: WEIGHTS.noHttps,
+      reason: `This link is not secure (http), so the file could be changed on its way to your computer.`,
+    };
+  }
+  return null;
+}
+
+function checkShortener(url) {
+  const host = new URL(url).hostname;
+  if (SHORTENER_HOSTS.includes(host)) {
+    return {
+      points: WEIGHTS.shortener,
+      reason: `This link uses a link shortener (${host}), which hides where the download really comes from.`,
+    };
+  }
+  return null;
+}
+
+console.log(checkNoHttps("http://free-games.example"));
+console.log(checkNoHttps("https://zoom.us/download"));
+console.log(checkShortener("https://bit.ly/abc123"));
+console.log(checkShortener("https://imgur.com/abc"));
