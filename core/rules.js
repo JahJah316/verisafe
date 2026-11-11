@@ -7,13 +7,25 @@ const WEIGHTS = {
   noHttps: 10,
 };
 
-// File types that deserve a second look
 const RISKY_EXTENSIONS = ["exe", "msi", "scr", "bat", "js", "jar", "zip"];
 const DECOY_EXTENSIONS = ["pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "png", "txt"];
 const SHORTENER_HOSTS = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly"];
+const BRANDS = [
+  { name: "zoom", domain: "zoom.us" },
+  { name: "paypal", domain: "paypal.com" },
+  { name: "microsoft", domain: "microsoft.com" },
+  { name: "google", domain: "google.com" },
+  { name: "apple", domain: "apple.com" },
+  { name: "amazon", domain: "amazon.com" },
+];
 
 function getExtension(fileName) {
   return fileName.split(".").pop().toLowerCase();
+}
+
+// The real owner of an address is its last two pieces
+function getRegistrableDomain(host) {
+  return host.split(".").slice(-2).join(".");
 }
 
 function checkRiskyType(fileName) {
@@ -63,7 +75,37 @@ function checkShortener(url) {
   return null;
 }
 
-console.log(checkNoHttps("http://free-games.example"));
-console.log(checkNoHttps("https://zoom.us/download"));
-console.log(checkShortener("https://bit.ly/abc123"));
-console.log(checkShortener("https://imgur.com/abc"));
+// Trick 1: a brand name on a website that isn't the brand's real one
+function checkBrandOnWrongDomain(url) {
+  const host = new URL(url).hostname;
+  const owner = getRegistrableDomain(host);
+  for (const brand of BRANDS) {
+    if (owner.includes(brand.name) && owner !== brand.domain) {
+      return {
+        points: WEIGHTS.lookalike,
+        reason: `This site's name contains "${brand.name}", but it is not the official ${brand.domain}.`,
+      };
+    }
+  }
+  return null;
+}
+
+// Trick 2: a real brand address stuffed in front of someone else's site
+function checkFakeSubdomain(url) {
+  const host = new URL(url).hostname;
+  const owner = getRegistrableDomain(host);
+  for (const brand of BRANDS) {
+    if (host.includes(brand.domain) && owner !== brand.domain) {
+      return {
+        points: WEIGHTS.lookalike,
+        reason: `This link includes ${brand.domain} to look official, but it really belongs to ${owner}.`,
+      };
+    }
+  }
+  return null;
+}
+
+console.log(checkBrandOnWrongDomain("http://zoom-download.co/Zoom_Installer.pdf.exe")); // object
+console.log(checkBrandOnWrongDomain("https://zoom.us/download"));                       // null
+console.log(checkFakeSubdomain("https://zoom.us.verify-login.example/notes"));          // object
+console.log(checkFakeSubdomain("https://support.zoom.us/help"));                        // null
