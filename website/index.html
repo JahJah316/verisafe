@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verisafe: check a download before you open it</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Verisafe</h1>
+    <p class="pitch">
+      Check a download for warning signs before you open it. Paste a file name
+      and the link it came from, or pick the file itself, and Verisafe tells you
+      what looks risky and why.
+    </p>
+  </header>
+
+  <main>
+    <section id="checker">
+      <h2>Check a download</h2>
+
+      <label for="fileName">File name</label>
+      <input id="fileName" type="text" placeholder="Zoom_Installer.pdf.exe" autocomplete="off">
+
+      <label for="url">Download link (optional)</label>
+      <input id="url" type="text" placeholder="https://example.com/file" autocomplete="off">
+
+      <label for="fileInput">Or choose the file to scan its contents (optional)</label>
+      <input id="fileInput" type="file">
+      <p id="fileNote" class="note"></p>
+
+      <button id="checkButton" type="button">Check it</button>
+      <p id="errorMessage" class="error" role="alert"></p>
+
+      <section id="result" class="result" hidden aria-live="polite">
+        <h3 id="resultTitle"></h3>
+        <p id="resultScore" class="score"></p>
+        <ul id="resultReasons"></ul>
+        <p id="resultAction" class="action"></p>
+        <p id="resultScope" class="scope"></p>
+      </section>
+    </section>
+
+    <section id="examples">
+      <h2>Try an example</h2>
+      <p class="note">Click one to fill in the checker and run it.</p>
+      <div id="exampleButtons"></div>
+    </section>
+
+    <section id="limits">
+      <h2>What Verisafe can and cannot tell you</h2>
+      <ul>
+        <li>Verisafe looks for warning signs. It cannot prove a file is safe.</li>
+        <li>A low result means nothing suspicious was found, not that the file is clean.</li>
+        <li>With only a name and link, it checks the name, the link, and common tricks like fake brand sites.</li>
+        <li>If you choose the file, it also checks the file&rsquo;s first bytes, plus risky features in PDFs and scripts.</li>
+        <li>Your file is read inside your browser and is never uploaded anywhere.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -9,7 +9,7 @@ import {
 import { checkDisguisedContent, checkPdfFeatures, checkScriptPatterns } from "./filescan.js";
 
 const ACTIONS = {
-  low: "No warning signs found. That doesn't guarantee the file is safe.",
+  low: "This doesn't guarantee the file is safe, so stay careful with anything you didn't expect.",
   medium: "Be careful. Only open this if you trust where it came from.",
   high: "Don't open this file unless you are sure it's legitimate.",
 };
