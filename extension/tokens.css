@@ -1,0 +1,43 @@
+/* Generated from website/style.css by tools/build-extension.js.
+   Do not edit: change the site's palette and re-run build:extension. */
+
+:root {
+  --bg: #f7f8fa;
+  --text: #1c2430;
+  --muted: #5b6676;
+  --card: #ffffff;
+  --border: #d9dee6;
+  --accent: #2f6fed;
+  --accent-text: #ffffff;
+  --low-bg: #e6f6ec;
+  --low-border: #2e9e5b;
+  --low-text: #14532d;
+  --medium-bg: #fff6dd;
+  --medium-border: #d9a300;
+  --medium-text: #6b4e00;
+  --high-bg: #fde8e8;
+  --high-border: #d64545;
+  --high-text: #7a1717;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161c;
+    --text: #e8ecf2;
+    --muted: #9aa5b5;
+    --card: #1a2029;
+    --border: #2d3644;
+    --accent: #6b9bff;
+    --accent-text: #0d1117;
+    --low-bg: #12301f;
+    --low-border: #3ec27a;
+    --low-text: #bdf0d2;
+    --medium-bg: #3a2f0c;
+    --medium-border: #e0b030;
+    --medium-text: #f5e1a0;
+    --high-bg: #3a1616;
+    --high-border: #ef6a6a;
+    --high-text: #fbc8c8;
+  }
+}

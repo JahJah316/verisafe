@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verisafe</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>Verisafe</h1>
+    <p class="pitch">A quick look at this page and your last download, before you open anything.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2 class="subject" id="subjectTitle">Checking this page…</h2>
+      <p class="link" id="subjectDetail"></p>
+
+      <section id="result" class="result" hidden aria-live="polite">
+        <h3 id="resultTitle"></h3>
+        <p id="resultScore" class="score"></p>
+        <ul id="resultReasons"></ul>
+        <p id="resultAction" class="action"></p>
+        <p id="resultScope" class="scope"></p>
+      </section>
+    </section>
+
+    <button id="openChecker" class="primary" type="button">Open full checker</button>
+    <p class="note" id="limits">
+      To look inside a file, open the full checker and choose the file there.
+    </p>
+  </main>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

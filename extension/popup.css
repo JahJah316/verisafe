@@ -1,0 +1,78 @@
+/* Verisafe popup layout.
+   The colours, font and verdict colours come from tokens.css, which
+   build:extension generates from website/style.css — so the popup and the site
+   always share one palette. This file holds layout only. */
+
+* { box-sizing: border-box; }
+
+body {
+  width: 360px;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+header { padding: 14px 14px 0; }
+main { padding: 0 14px 14px; }
+
+h1 { margin: 0; font-size: 20px; }
+.pitch { color: var(--muted); margin: 0.15rem 0 0; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px 14px;
+  margin-top: 12px;
+}
+
+h2.subject {
+  margin: 0;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.link {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0.15rem 0 0;
+  word-break: break-all;
+}
+
+/* Same verdict card as the site */
+.result {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+}
+.result[hidden] { display: none; }
+.result h3 { margin: 0 0 0.15rem; font-size: 13px; }
+.result .score, .result .scope { font-size: 11px; margin: 0.15rem 0; }
+.result ul { padding-left: 1.1rem; margin: 0.4rem 0; }
+.result li { margin: 0.15rem 0; }
+.result .action { font-weight: 600; margin: 0.4rem 0 0; }
+
+.result.low { background: var(--low-bg); border-color: var(--low-border); color: var(--low-text); }
+.result.medium { background: var(--medium-bg); border-color: var(--medium-border); color: var(--medium-text); }
+.result.high { background: var(--high-bg); border-color: var(--high-border); color: var(--high-text); }
+
+/* Same look as the site's #checkButton */
+.primary {
+  width: 100%;
+  margin-top: 12px;
+  padding: 0.6rem 1.25rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.primary:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+.note { color: var(--muted); font-size: 12px; margin: 8px 0 0; }
