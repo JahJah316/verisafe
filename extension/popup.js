@@ -5,7 +5,7 @@ import { looksLikeFileName } from "./lib/rules.js";
 
 // Where the "Open full checker" button goes: the hosted checker. For local work
 // swap this for http://127.0.0.1:8137/website/index.html and run dev-server.js.
-const SITE_URL = "https://verisafe-p1zjak-preview.freebuff.site/website/";
+const SITE_URL = "https://verisafe.pages.dev/website/";
 
 // Same wording as the website
 const TITLES = {
