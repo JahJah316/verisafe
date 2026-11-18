@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "test": "node core/run-tests.js"
+    "test": "node core/run-tests.js",
+    "build:extension": "node tools/build-extension.js"
   }
 }

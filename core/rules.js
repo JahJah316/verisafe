@@ -29,9 +29,19 @@ const BRANDS = [
 ];
 
 // "README" has no dot, so it has no extension
+// Every extension any check treats as worth looking at
+export const FILE_EXTENSIONS = [...new Set([...PROGRAM_EXTENSIONS, ...ARCHIVE_EXTENSIONS, ...DECOY_EXTENSIONS])];
+
+// A page address like .../index.html is not a download name; a program or a
+// document ending a link is. The extension uses this to avoid checking
+// ordinary web pages as if they were files.
 export function getExtension(fileName) {
   const parts = fileName.toLowerCase().split(".");
   return parts.length > 1 ? parts.pop() : "";
+}
+
+export function looksLikeFileName(fileName) {
+  return FILE_EXTENSIONS.includes(getExtension(fileName));
 }
 
 // The real owner of an address is its last two pieces
