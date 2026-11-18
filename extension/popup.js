@@ -3,9 +3,9 @@
 import { analyze } from "./lib/analyze.js";
 import { looksLikeFileName } from "./lib/rules.js";
 
-// Where the "Open full checker" button goes. Change this once the site is
-// hosted (for example the GitHub Pages address).
-const SITE_URL = "http://127.0.0.1:8137/website/index.html";
+// Where the "Open full checker" button goes: the hosted checker. For local work
+// swap this for http://127.0.0.1:8137/website/index.html and run dev-server.js.
+const SITE_URL = "https://verisafe-p1zjak-preview.freebuff.site/website/";
 
 // Same wording as the website
 const TITLES = {
