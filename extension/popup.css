@@ -18,7 +18,30 @@ body {
 header { padding: 14px 14px 0; }
 main { padding: 0 14px 14px; }
 
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 h1 { margin: 0; font-size: 20px; }
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.icon-button:hover { color: var(--accent); border-color: var(--border); background: var(--card); }
+.icon-button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 .pitch { color: var(--muted); margin: 0.15rem 0 0; }
 
 .card {

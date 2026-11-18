@@ -1,0 +1,120 @@
+/* Verisafe settings page. Colours come from tokens.css, generated from
+   website/style.css, so this page looks like the site. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+header, main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+header { padding-top: 2rem; }
+main { padding-bottom: 2rem; }
+
+h1 { margin: 0 0 0.25rem; font-size: 2rem; }
+h2 { margin: 0 0 0.25rem; font-size: 1.15rem; }
+.pitch { color: var(--muted); margin-top: 0; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.note { color: var(--muted); font-size: 0.9rem; margin: 0.25rem 0 0; }
+.error { color: var(--high-text); font-size: 0.9rem; min-height: 1.2rem; margin: 0.4rem 0 0; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+fieldset { border: 0; margin: 0.75rem 0 0; padding: 0; }
+
+.choice {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.choice:hover { border-color: var(--accent); }
+.choice input { margin: 0.3rem 0 0; accent-color: var(--accent); }
+.choice-note { display: block; color: var(--muted); font-size: 0.9rem; }
+
+form { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+
+input[type="text"] {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.primary {
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: var(--accent);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.primary:focus-visible,
+input[type="text"]:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+.site-list { list-style: none; margin: 0.75rem 0 0; padding: 0; }
+.site-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.remove {
+  padding: 0.25rem 0.6rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.remove:hover { border-color: var(--high-border); color: var(--high-text); }
+
+code {
+  padding: 0.05rem 0.3rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.status { color: var(--muted); font-size: 0.85rem; min-height: 1.2rem; margin: 1rem 0 0; }

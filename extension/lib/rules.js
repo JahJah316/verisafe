@@ -47,7 +47,7 @@ export function looksLikeFileName(fileName) {
 }
 
 // The real owner of an address is its last two pieces
-function getRegistrableDomain(host) {
+export function getRegistrableDomain(host) {
   return host.split(".").slice(-2).join(".");
 }
 
