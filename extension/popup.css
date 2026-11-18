@@ -27,6 +27,9 @@ main { padding: 0 14px 14px; }
 
 h1 { margin: 0; font-size: 20px; }
 
+.header-actions { display: flex; align-items: center; gap: 2px; }
+svg[hidden] { display: none; }
+
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -55,14 +58,16 @@ h1 { margin: 0; font-size: 20px; }
 h2.subject {
   margin: 0;
   font-size: 14px;
-  word-break: break-all;
+  /* Long file names break; normal words stay whole. */
+  overflow-wrap: anywhere;
 }
 
 .link {
   color: var(--muted);
   font-size: 12px;
   margin: 0.15rem 0 0;
-  word-break: break-all;
+  /* Long URLs break; prose keeps its words together. */
+  overflow-wrap: anywhere;
 }
 
 /* Same verdict card as the site */

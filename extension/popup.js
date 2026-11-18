@@ -2,6 +2,7 @@
 // the file name and the link. It cannot read the file's contents.
 import { analyze } from "./lib/analyze.js";
 import { looksLikeFileName } from "./lib/rules.js";
+import { initTheme, toggleTheme } from "./theme.js";
 
 // Where the "Open full checker" button goes: the hosted checker. For local work
 // swap this for http://127.0.0.1:8137/website/index.html and run dev-server.js.
@@ -24,6 +25,9 @@ const resultAction = document.getElementById("resultAction");
 const resultScope = document.getElementById("resultScope");
 const openChecker = document.getElementById("openChecker");
 const openSettings = document.getElementById("openSettings");
+const themeButton = document.getElementById("toggleTheme");
+const iconMoon = document.getElementById("iconMoon");
+const iconSun = document.getElementById("iconSun");
 
 // A link to a file usually ends in a name with a dot, like …/Zoom_Installer.exe
 function fileNameFromUrl(value) {
@@ -99,6 +103,23 @@ openChecker.addEventListener("click", () => {
 openSettings.addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
+
+// Shows the icon for what the button switches to, not the current theme.
+// The icons are SVG, where `element.hidden = true` only sets an expando, so the
+// attribute has to be toggled explicitly for them to actually hide.
+function renderTheme(theme) {
+  const next = theme === "dark" ? "light" : "dark";
+  themeButton.title = `Switch to ${next} mode`;
+  themeButton.setAttribute("aria-label", `Switch to ${next} mode`);
+  iconMoon.toggleAttribute("hidden", theme === "dark");
+  iconSun.toggleAttribute("hidden", theme !== "dark");
+}
+
+themeButton.addEventListener("click", async () => {
+  renderTheme(await toggleTheme());
+});
+
+initTheme().then(renderTheme).catch(() => {});
 
 run().catch(() => {
   subjectTitle.textContent = "Could not check this page";

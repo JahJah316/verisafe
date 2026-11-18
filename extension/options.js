@@ -1,4 +1,5 @@
 import { getRegistrableDomain } from "./lib/rules.js";
+import { initTheme } from "./theme.js";
 
 // Keep these in step with DEFAULT_PREFS in background.js.
 const DEFAULT_PREFS = { warnLevel: "medium", trustedSites: [] };
@@ -100,6 +101,9 @@ form.addEventListener("submit", async (event) => {
   renderSites();
   showStatus(site === typed ? `Trusting ${site}.` : `Trusting ${site} (from ${typed}).`);
 });
+
+// Follow the theme chosen in the popup, so both pages look the same.
+initTheme().catch(() => {});
 
 load().catch(() => {
   siteError.textContent = "Settings could not be loaded. Reload this page.";
