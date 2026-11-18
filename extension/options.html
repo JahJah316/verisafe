@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verisafe settings</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <header>
+    <h1>Verisafe</h1>
+    <p class="pitch">
+      These settings change when Verisafe warns you. The checks themselves stay
+      the same as the website's, so a download gets the same verdict in both places.
+    </p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>When to warn</h2>
+      <p class="note">Verisafe checks every download. This chooses which results raise a notification.</p>
+
+      <fieldset>
+        <legend class="visually-hidden">When to warn</legend>
+
+        <label class="choice">
+          <input type="radio" name="warnLevel" value="medium">
+          <span>
+            <strong>Medium and above</strong>
+            <span class="choice-note">Warn me about anything that looks risky. This is the default.</span>
+          </span>
+        </label>
+
+        <label class="choice">
+          <input type="radio" name="warnLevel" value="high">
+          <span>
+            <strong>High only</strong>
+            <span class="choice-note">Only the most serious results, so quieter.</span>
+          </span>
+        </label>
+
+        <label class="choice">
+          <input type="radio" name="warnLevel" value="never">
+          <span>
+            <strong>Never</strong>
+            <span class="choice-note">No notifications. Opening the popup still checks what it can see.</span>
+          </span>
+        </label>
+      </fieldset>
+    </section>
+
+    <section class="card">
+      <h2>Trusted sites</h2>
+      <p class="note">
+        Downloads from these sites never raise a warning. Matched on the exact
+        domain, so <code>github.com</code> also covers <code>objects.github.com</code>,
+        but not <code>notgithub.com</code>.
+      </p>
+
+      <form id="addSiteForm">
+        <input id="siteInput" type="text" placeholder="github.com" autocomplete="off" spellcheck="false" aria-label="Site to trust">
+        <button id="addSite" class="primary" type="submit">Add site</button>
+      </form>
+      <p id="siteError" class="error" role="alert"></p>
+
+      <ul id="siteList" class="site-list"></ul>
+      <p id="emptyNote" class="note">No trusted sites yet.</p>
+    </section>
+
+    <p id="status" class="status" aria-live="polite"></p>
+  </main>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

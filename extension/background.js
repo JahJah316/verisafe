@@ -1,20 +1,22 @@
 // Checks each download the moment it starts, using the name and link only.
 // This is the part the website cannot do: warn before the file is opened.
 import { analyze } from "./lib/analyze.js";
+import { getRegistrableDomain } from "./lib/rules.js";
 
-const NOTIFY_LEVELS = new Set(["medium", "high"]);
+// These defaults are the behaviour the extension had before settings existed.
+const DEFAULT_PREFS = { warnLevel: "medium", trustedSites: [] };
+
+// Which verdict levels raise a notification, per setting.
+const LEVELS_TO_WARN = {
+  high: ["high"],
+  medium: ["medium", "high"],
+  never: [],
+};
 
 const NOTIFICATION_TITLES = {
   medium: "This download looks risky",
   high: "This download looks very risky",
 };
-
-// The report is popup.html: the same page the toolbar icon opens. Chrome only
-// opens a toolbar popup on a click, never from code, so a risky download opens
-// the same page in its own small window instead. The body is 360px wide, so
-// 380 leaves room for the window frame.
-const REPORT_URL = chrome.runtime.getURL("popup.html");
-const REPORT_SIZE = { width: 380, height: 560 };
 
 // Chrome gives a full path like C:\Users\me\Downloads\file.exe
 function nameFromPath(value) {
@@ -33,43 +35,19 @@ function shorten(text, max) {
   return text.length > max ? `${text.slice(0, max - 1)}…` : text;
 }
 
-let reportWindowId = null;
+function shouldWarn(level, warnLevel) {
+  const allowed = LEVELS_TO_WARN[warnLevel] ?? LEVELS_TO_WARN.medium;
+  return allowed.includes(level);
+}
 
-// Only one report window at a time, and a fresh one each download: a window
-// left open from an earlier file would otherwise show that file's verdict.
-async function openReportWindow() {
-  if (reportWindowId !== null) {
-    try {
-      await chrome.windows.remove(reportWindowId);
-    } catch {
-      // Already closed by the user.
-    }
-    reportWindowId = null;
-  }
-
-  const openWindows = await chrome.windows.getAll({ populate: true });
-  for (const window of openWindows) {
-    if (window.tabs?.some((tab) => tab.url === REPORT_URL)) {
-      try {
-        await chrome.windows.remove(window.id);
-      } catch {
-        // Already closed by the user.
-      }
-    }
-  }
-
+// Trusted sites are matched on the exact registrable domain, so "github.com"
+// also covers objects.github.com but not notgithub.com.
+function isTrustedSite(url, trustedSites) {
+  if (trustedSites.length === 0) return false;
   try {
-    const created = await chrome.windows.create({
-      url: REPORT_URL,
-      type: "popup",
-      ...REPORT_SIZE,
-      focused: true,
-    });
-    reportWindowId = created?.id ?? null;
-  } catch (error) {
-    // The notification already went out, so a window Chrome refuses to open
-    // must not take down the download listener.
-    console.warn("Verisafe could not open the report window:", error);
+    return trustedSites.includes(getRegistrableDomain(new URL(url).hostname));
+  } catch {
+    return false;
   }
 }
 
@@ -78,7 +56,7 @@ chrome.downloads.onCreated.addListener(async (item) => {
   const name = nameFromPath(item.filename) || fallbackName(url);
   const result = analyze(name, url);
 
-  // The report window reads this as soon as it loads, so write it first.
+  // The popup reads this when you open it, whatever the warning setting.
   await chrome.storage.session.set({
     lastDownload: {
       fileName: name,
@@ -90,7 +68,13 @@ chrome.downloads.onCreated.addListener(async (item) => {
     },
   });
 
-  if (!NOTIFY_LEVELS.has(result.level)) return;
+  // Read the settings on every download: the worker is shut down between
+  // downloads, so a value cached in a variable here would go stale.
+  const prefs = { ...DEFAULT_PREFS, ...(await chrome.storage.sync.get(DEFAULT_PREFS)) };
+  const trustedSites = Array.isArray(prefs.trustedSites) ? prefs.trustedSites : [];
+
+  if (!shouldWarn(result.level, prefs.warnLevel)) return;
+  if (isTrustedSite(url, trustedSites)) return;
 
   const reason = result.reasons[0] ?? "Verisafe found warning signs in the name or the link.";
   chrome.notifications.create(`verisafe-${item.id}`, {
@@ -100,6 +84,4 @@ chrome.downloads.onCreated.addListener(async (item) => {
     message: shorten(`${name} — ${reason}`, 200),
     priority: 2,
   });
-
-  await openReportWindow();
 });

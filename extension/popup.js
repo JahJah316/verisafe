@@ -23,6 +23,7 @@ const resultReasons = document.getElementById("resultReasons");
 const resultAction = document.getElementById("resultAction");
 const resultScope = document.getElementById("resultScope");
 const openChecker = document.getElementById("openChecker");
+const openSettings = document.getElementById("openSettings");
 
 // A link to a file usually ends in a name with a dot, like …/Zoom_Installer.exe
 function fileNameFromUrl(value) {
@@ -92,6 +93,11 @@ async function run() {
 
 openChecker.addEventListener("click", () => {
   chrome.tabs.create({ url: SITE_URL });
+});
+
+// Opening the options page dismisses the popup on its own, so no window.close().
+openSettings.addEventListener("click", () => {
+  chrome.runtime.openOptionsPage();
 });
 
 run().catch(() => {
