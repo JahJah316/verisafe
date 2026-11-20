@@ -1,5 +1,5 @@
 // A tiny local web server so the website can load the files in /core.
-// Run it with:  node dev-server.js   then open http://localhost:3000
+// Run it with: node dev-server.js, then open http://127.0.0.1:8137
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join } from "node:path";
@@ -15,11 +15,7 @@ const types = {
 
 const server = createServer(async (req, res) => {
   let pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
-    if (pathname === "/") {
-    res.writeHead(302, { Location: "/website/index.html" });
-    res.end();
-    return;
-  }
+  if (pathname === "/") pathname = "/index.html";
 
   const filePath = join(root, pathname);
   if (!filePath.startsWith(root)) {

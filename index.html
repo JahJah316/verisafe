@@ -3,37 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/">
   <title>Verisafe: Check a download before you open it</title>
   <meta name="google-site-verification" content="AzNyIQqNtpgV3rwo4FCXYWHTgaG_ZsFLghT1HxG4eCQ" />
+  <script src="settings.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Verisafe</h1>
-    <p class="pitch">
-      Check a download for warning signs before you open it. Paste a file name
-      and the link it came from, or pick the file itself, and Verisafe tells you
-      what looks risky and why.
-    </p>
+    <div class="header-top">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✓</span><span>Verisafe</span></div>
+      <div class="settings-wrap">
+        <button id="settingsButton" class="settings-button" type="button" aria-expanded="false" aria-controls="settingsPanel">⚙ <span>Settings</span></button>
+        <section id="settingsPanel" class="settings-panel" aria-labelledby="settingsTitle" hidden>
+          <div class="settings-heading">
+            <h2 id="settingsTitle">Settings</h2>
+            <button id="settingsDone" class="text-button" type="button">Done</button>
+          </div>
+          <label for="themeSetting">Theme</label>
+          <select id="themeSetting">
+            <option value="system">Match my device</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <fieldset class="accent-options">
+            <legend>Accent color</legend>
+            <label><input type="radio" name="accent" value="blue"><span class="swatch blue"></span>Blue</label>
+            <label><input type="radio" name="accent" value="teal"><span class="swatch teal"></span>Teal</label>
+            <label><input type="radio" name="accent" value="green"><span class="swatch green"></span>Green</label>
+            <label><input type="radio" name="accent" value="purple"><span class="swatch purple"></span>Purple</label>
+            <label><input type="radio" name="accent" value="orange"><span class="swatch orange"></span>Orange</label>
+            <label><input type="radio" name="accent" value="pink"><span class="swatch pink"></span>Pink</label>
+          </fieldset>
+          <label for="fontSetting">Font</label>
+          <select id="fontSetting">
+            <option value="system">System sans-serif</option>
+            <option value="times">Times New Roman</option>
+            <option value="georgia">Georgia</option>
+            <option value="verdana">Verdana</option>
+            <option value="mono">Monospace</option>
+          </select>
+          <label for="sizeSetting">Text size</label>
+          <select id="sizeSetting">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+          <button id="settingsReset" class="secondary-button" type="button">Reset to defaults</button>
+        </section>
+      </div>
+    </div>
+    <div class="hero">
+      <p class="eyebrow"><span aria-hidden="true">✦</span> A little more confidence before you click</p>
+      <h1>Check a download<br><span>before you open it.</span></h1>
+      <p class="pitch">Enter a file name and download link, or choose the file itself. Verisafe checks for warning signs and explains what it finds.</p>
+    </div>
   </header>
 
   <main>
     <section id="checker">
-      <h2>Check a download</h2>
-
+      <div class="section-heading"><div><p class="section-kicker">YOUR DOWNLOAD</p><h2>Check a download</h2></div><span class="heading-icon" aria-hidden="true">↓</span></div>
+      <p class="checker-intro">Start with a file name or choose a file below.</p>
       <label for="fileName">File name</label>
       <input id="fileName" type="text" placeholder="Zoom_Installer.pdf.exe" autocomplete="off">
-
       <label for="url">Download link (optional)</label>
       <input id="url" type="text" placeholder="https://example.com/file" autocomplete="off">
-
-      <label for="fileInput">Or choose the file to scan its contents (optional)</label>
+      <label for="fileInput">Or choose a file to check its contents (optional)</label>
       <input id="fileInput" type="file">
       <p id="fileNote" class="note"></p>
-
-      <button id="checkButton" type="button">Check it</button>
+      <button id="checkButton" type="button">Check this download</button>
+      <p class="privacy-note"><span aria-hidden="true">✓</span> Your file stays on your device. It is never uploaded.</p>
       <p id="errorMessage" class="error" role="alert"></p>
-
       <section id="result" class="result" hidden aria-live="polite">
         <h3 id="resultTitle"></h3>
         <p id="resultScore" class="score"></p>
@@ -44,23 +84,33 @@
     </section>
 
     <section id="examples">
+      <p class="section-kicker">NOT SURE WHERE TO START?</p>
       <h2>Try an example</h2>
-      <p class="note">Click one to fill in the checker and run it.</p>
+      <p class="note">Choose an example to see how the checker works.</p>
       <div id="exampleButtons"></div>
     </section>
 
     <section id="limits">
-      <h2>What Verisafe can and cannot tell you</h2>
-      <ul>
-        <li>Verisafe looks for warning signs. It cannot prove a file is safe.</li>
-        <li>A low result means nothing suspicious was found, not that the file is clean.</li>
-        <li>With only a name and link, it checks the name, the link, and common tricks like fake brand sites.</li>
-        <li>If you choose the file, it also checks the file&rsquo;s first bytes, plus risky features in PDFs and scripts.</li>
-        <li>Your file is read inside your browser and is never uploaded anywhere.</li>
-      </ul>
+      <p class="section-kicker">GOOD TO KNOW</p>
+      <h2>What Verisafe can and can’t tell you</h2>
+      <div class="limits-columns">
+        <div>
+          <h3>What it checks</h3>
+          <ul>
+            <li>The file name, the link, and common tricks such as fake brand sites.</li>
+            <li>If you choose a file, its first bytes and risky features in PDFs and scripts, within the first 5 MB.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>What it can’t tell you</h3>
+          <ul>
+            <li>Verisafe looks for warning signs. It cannot prove a file is safe.</li>
+            <li>A low risk result means nothing suspicious was found, not that the file is clean.</li>
+          </ul>
+        </div>
+      </div>
     </section>
   </main>
-
   <script type="module" src="app.js"></script>
 </body>
 </html>

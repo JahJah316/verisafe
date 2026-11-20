@@ -44,7 +44,7 @@ fileInput.addEventListener("change", async () => {
   const buffer = await file.slice(0, MAX_SCAN_BYTES).arrayBuffer();
   pickedFile = { name: file.name, bytes: new Uint8Array(buffer) };
   fileNameInput.value = file.name;
-  fileNote.textContent = "The file's contents will be scanned on your computer. Nothing is uploaded.";
+  fileNote.textContent = "Verisafe checks this file on your device. Nothing is uploaded.";
 });
 
 function runCheck() {
@@ -53,12 +53,12 @@ function runCheck() {
   errorMessage.textContent = "";
 
   if (!name) {
-    errorMessage.textContent = "Type a file name first.";
+    errorMessage.textContent = "Enter a file name first.";
     resultCard.hidden = true;
     return;
   }
   if (url !== "" && !isValidUrl(url)) {
-    errorMessage.textContent = "That doesn't look like a full link. Start it with http:// or https://";
+    errorMessage.textContent = "Enter a full link starting with http:// or https://.";
     resultCard.hidden = true;
     return;
   }
